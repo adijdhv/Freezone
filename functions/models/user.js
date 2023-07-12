@@ -13,6 +13,9 @@
         password : {
                 type: String,
                 required: true
+        },
+        documents:{
+
         }
 
  },{timestamps :true});
