@@ -9,7 +9,7 @@ const signup = async(req,res) =>{
         console.log("into signup")
 
         const{ email,username,password} = req.body;
-        res.send("<h1>IN SIGN UP</h1>")
+         
 
           
         try {
