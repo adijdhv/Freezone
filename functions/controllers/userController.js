@@ -9,16 +9,15 @@ const signup = async(req,res) =>{
         console.log("into signup")
 
         const{ email,username,password} = req.body;
-
-        console.log("req.body.name",req.body.username)
-        console.log("req.body.email",req.body.email)
-        console.log("req.body.password",req.body.password)
-        console.log("req.body.Schema",userModel)
+         
+        
+          
         try {
                 const existingUser = await userModel.findOne({ email: email });
                 if(existingUser){
                         return res.status(400).json({ messsage: "user already Exists"})
                 }
+                
                 const hashedPassword = await bcrypt.hash(password,10);
 
                 const result = await userModel.create({
@@ -36,6 +35,7 @@ const signup = async(req,res) =>{
                 res.status(500).json({
                         message: "something went wrong"
                 })
+
 
         }
 }
@@ -58,6 +58,7 @@ const signin = async(req,res)=>{
                         _email_: existingUser.email, id: existingUser._id
                 },SECRET_KEY)
                 res.status(200).json({user:existingUser, token: token})
+                console.log("Signed in successfully")
 
         } catch (error) {
                 console.log(error);
