@@ -10,13 +10,14 @@ const signup = async(req,res) =>{
 
         const{ email,username,password} = req.body;
          
-
+        
           
         try {
                 const existingUser = await userModel.findOne({ email: email });
                 if(existingUser){
                         return res.status(400).json({ messsage: "user already Exists"})
                 }
+                
                 const hashedPassword = await bcrypt.hash(password,10);
 
                 const result = await userModel.create({
@@ -57,6 +58,7 @@ const signin = async(req,res)=>{
                         _email_: existingUser.email, id: existingUser._id
                 },SECRET_KEY)
                 res.status(200).json({user:existingUser, token: token})
+                console.log("Signed in successfully")
 
         } catch (error) {
                 console.log(error);

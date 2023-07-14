@@ -3,8 +3,11 @@ const { connectDatabase } = require("./config/database");
 
 connectDatabase()
 
-PORT = process.env.PORT
-app.listen(process.env.PORT,()=>{
-        console.log(`Server is running on ${process.env.PORT} 
-         link : http://localhost:3000/api/v1/signup`)
+PORT = "3000"
+app.listen(PORT,()=>{
+        console.log(`Server is running on ${PORT} 
+         link : http://localhost:3000/api/signup`)
 })
+
+//Endpoints for localhost
+//signup -  http://localhost:3000/api/signup
