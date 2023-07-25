@@ -33,6 +33,7 @@ app.get("/", (req, res) => {
         res.send("Working Fine")
 })
 app.use("/api/user/", userRouter)
+//app.use("/api/admin/", adminRouter)
 
 
 
