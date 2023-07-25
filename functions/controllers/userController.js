@@ -1,75 +1,121 @@
-const bcrypt = require("bcrypt")
+ 
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "APIDONE"
-const { JsonWebTokenError } = require( "jsonwebtoken");
-const userModel  = require(  "../models/user");
-console.log("above signup")
+const bcrypt = require("bcrypt")
+const ftp = require('basic-ftp');
+const { JsonWebTokenError } = require("jsonwebtoken");
+const User = require("../models/user");
 
-const signup = async(req,res) =>{
-        console.log("into signup")
+const { catchAsyncError } = require("../middleware/catchAsyncError"); 
+const ErrorHandler = require("../utils/errorHandler.js");
+const { sendToken } = require("../utils/sendToken")
+const session = require('express-session');
+//const { setUserNameCookie, getUserNameFromCookie } = require('../utils/storeCurrent');
 
-        const{ email,username,password} = req.body;
-         
-        
-          
+
+ 
+ 
+const signup = async (req, res) => {
         try {
-                const existingUser = await userModel.findOne({ email: email });
-                if(existingUser){
-                        return res.status(400).json({ messsage: "user already Exists"})
-                }
-                
-                const hashedPassword = await bcrypt.hash(password,10);
+                const { email, username, password } = req.body;
 
-                const result = await userModel.create({
+
+
+                const existingUser = await User.findOne({ email: email });
+
+                if (existingUser) {
+                        return res.status(400).json({ messsage: "user already Exists" })
+                }
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                const user = await User.create({
                         email: email,
-                        password : hashedPassword,
+                        password: hashedPassword,
                         username: username
                 })
-                const token = jwt.sign({
-                        _email_: result.email, id: result._id
-                },SECRET_KEY)
-                res.status(200).json({user:result, token: token})
+
+
+
+
+                sendToken(res, user, `Registered user ${user.username}`, 200);
+                //  res.status(200).json({user:user, token: token})
 
         } catch (error) {
-                console.log(error);
+                console.log("ERROR", error);
                 res.status(500).json({
+
                         message: "something went wrong"
                 })
 
 
         }
 }
-const signin = async(req,res)=>{
-        const {email, password} = req.body;
+const signin = async (req, res) => {
+
         try {
-                const existingUser = await userModel.findOne({ email: email });
-                if(!existingUser){
-                        return res.status(400).json({ messsage: "User not Registered, Signup now"})
-                }
-                const matchPassword = await bcrypt.compare(password,existingUser.password);
-                if(!matchPassword){
-                        res.status(400).json({
-                                message:"Password Incorrect"
-                        })
+                const { email, password } = req.body;
+                const existingUser = await User.findOne({ email: email }).select("password");
+
+                if (!existingUser) {
+                        return res.status(400).json({ messsage: "User not Registered, Signup now" })
                 }
 
-              
-                const token = jwt.sign({
-                        _email_: existingUser.email, id: existingUser._id
-                },SECRET_KEY)
-                res.status(200).json({user:existingUser, token: token})
-                console.log("Signed in successfully")
+                const matchPassword = await existingUser.comparePassword(password)
+
+
+                if (!matchPassword) {
+                        res.status(400).json({
+                                message: "Password Incorrect"
+                        })
+                } else {
+                       
+                         
+ 
+
+
+                        sendToken(res, existingUser, "Signed in successfully", 201);
+
+
+
+                }
+
+
+
 
         } catch (error) {
                 console.log(error);
-                res.status(500).json({
-                        message: "something went wrong"
-                })
-
         }
 
 
 }
+const signout = async (req, res, next) => {
+        res
+                .status(200)
+                .cookie("token", null, {
+                        expires: new Date(Date.now()),
+                        //httpOnly: true,
+                        // secure: true,
+                        // sameSite: "none",
+                })
+                .json({
+                        success: true,
+                        message: "Logged Out Successfully",
+                });
+
+}
+  const getMyProfile = async (req, res, next) => {
+        try {
+                const user = await User.findById(req.user._id);
+      
+        res.status(200).json({
+          success: true,
+          user,
+        });
+                
+        } catch (error) {
+                console.log(err)
+        }
+        
+      };
 
 
-module.exports = {signup,signin}
+module.exports = { signup, signin, signout ,getMyProfile }

@@ -1,7 +1,22 @@
 const app = require("./app");
 const { connectDatabase } = require("../functions/config/database");
+const session = require('express-session');
+
+const cloudinary = require("cloudinary") ;
+
 
 connectDatabase()
+
+
+
+
+
+cloudinary.v2.config({
+        cloud_name: process.env.CLOUDINARY_CLIENT_NAME,
+        api_key: process.env.CLOUDINARY_CLIENT_API,
+        api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
+      });
+ 
 
 PORT = "3000"
 app.listen(PORT,()=>{

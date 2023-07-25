@@ -1,6 +1,9 @@
   const mongoose = require("mongoose")
+  const bcrypt = require("bcrypt")
+  const jwt = require("jsonwebtoken");
 
- const userModel = mongoose.Schema({
+ const schema = mongoose.Schema({
+        
 
         email : {
                 type: String,
@@ -12,12 +15,49 @@
         },
         password : {
                 type: String,
-                required: true
+                required: true,
+                select: false,
+        } ,
+        kycApproved :{
+          type: Boolean, 
+          default: false
         },
-        documents:{
-
-        }
+        
+        document: {
+          public_id: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+        },
+        
 
  },{timestamps :true});
 
- module.exports = mongoose.model("User",userModel);
+//  schema.pre("save", async function (next) {
+//         if (!this.isModified("password")) return next();
+//         this.password = await bcrypt.hash(this.password, 10);
+//         next();
+//       });
+
+ schema.methods.comparePassword = async function (password) {
+        //console.log("this PASSWORD",this.password)
+        //console.log("Passed password",password)
+        return await bcrypt.compare(password, this.password )
+                
+              
+
+      };
+
+ 
+      schema.methods.getJWTToken = function () {
+       // console.log("SECRET KEY: ",process.env.SECRET_KEY  )
+        return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+          expiresIn: "15d",
+        });
+      };
+
+ module.exports = mongoose.model("User",schema);
