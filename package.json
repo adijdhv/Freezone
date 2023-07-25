@@ -2,9 +2,10 @@
   "name": "freezone-portal",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon functions/server.js"
+    "dev": "nodemon functions/index.js"
+    
   },
   "author": "",
   "license": "ISC",
