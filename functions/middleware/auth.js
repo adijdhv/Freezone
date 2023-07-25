@@ -1,27 +1,22 @@
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "APIDONE";
-const auth = (req,res,next) =>{
-try {
-        
-        let token = req.headers.autherization;
-
-        if(token){
-                token = token.split("")[1];
-                let user = jwt.verify(token, SECRET_KEY)
-
-                req.userId =user.id;
-
-        }else{
-                res.status(401).json({
-                        message: "Unautherized User"
-                })
-        }
-        next()
-
-} catch (error) {
-        console.log(error)
-        
-}
-}
-
-module.exports = auth;
+ 
+const ErrorHandler= require("../utils/errorHandler.js"); 
+const { catchAsyncError } = require("./catchAsyncError.js"); 
+//const { User } = require("../models/user.js");
+const User = require("../models/user.js");
+//const SECRET_KEY = "APIDONE";
+  const isAuthenticated = catchAsyncError(async (req, res, next) => {
+        const { token } = req.cookies;
+        console.log("User",User)
+         
+        if (!token) return next(new ErrorHandler("Not Logged In", 401));
+      
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("decoded: ",decoded._id )
+      
+        req.user = await User.findById(  {_id: decoded._id});
+        console.log("REQ>USER:", req.user)
+      
+        next();
+      });
+module.exports = isAuthenticated;
