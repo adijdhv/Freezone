@@ -1,14 +1,14 @@
  
-const jwt = require("jsonwebtoken");
+//const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
-const ftp = require('basic-ftp');
+//const ftp = require('basic-ftp');
 const { JsonWebTokenError } = require("jsonwebtoken");
 const User = require("../models/user");
 
 const { catchAsyncError } = require("../middleware/catchAsyncError"); 
-const ErrorHandler = require("../utils/errorHandler.js");
+//const ErrorHandler = require("../utils/errorHandler.js");
 const { sendToken } = require("../utils/sendToken")
-const session = require('express-session');
+//const session = require('express-session');
 //const { setUserNameCookie, getUserNameFromCookie } = require('../utils/storeCurrent');
 
 
@@ -30,7 +30,9 @@ const signup = async (req, res) => {
                 const user = await User.create({
                         email: email,
                         password: hashedPassword,
-                        username: username
+                        username: username,
+                        role: 'user'
+                        
                 })
 
 
@@ -58,34 +60,17 @@ const signin = async (req, res) => {
                 if (!existingUser) {
                         return res.status(400).json({ messsage: "User not Registered, Signup now" })
                 }
-
                 const matchPassword = await existingUser.comparePassword(password)
 
-
                 if (!matchPassword) {
-                        res.status(400).json({
-                                message: "Password Incorrect"
-                        })
+                        res.status(400).json({message: "Password Incorrect"})
                 } else {
-                       
-                         
- 
-
-
                         sendToken(res, existingUser, "Signed in successfully", 201);
-
-
-
                 }
-
-
-
-
+ 
         } catch (error) {
                 console.log(error);
-        }
-
-
+        } 
 }
 const signout = async (req, res, next) => {
         res
@@ -102,6 +87,44 @@ const signout = async (req, res, next) => {
                 });
 
 }
+const updateProfile = catchAsyncError(async (req, res, next) => {
+        const { name, email } = req.body;
+      
+        const user = await User.findById(req.user._id);
+      
+        if (name) user.name = name;
+        if (email) user.email = email;
+      
+        await user.save();
+      
+        res.status(200).json({
+          success: true,
+          message: "Profile Updated Successfully",
+        });
+      });
+
+const deleteMyProfile = catchAsyncError(async (req, res, next) => {
+        const user = await User.findById(req.user._id);
+      
+        await cloudinary.v2.uploader.destroy(user.document.public_id);
+        await cloudinary.v2.uploader.destroy(user.document.url);
+      
+        // Cancel Subscription
+      
+        await user.remove();
+      
+        res
+          .status(200)
+          .cookie("token", null, {
+            expires: new Date(Date.now()),
+          })
+          .json({
+            success: true,
+            message: "User Deleted Successfully",
+          });
+      });
+      
+      
   const getMyProfile = async (req, res, next) => {
         try {
                 const user = await User.findById(req.user._id);
@@ -118,4 +141,4 @@ const signout = async (req, res, next) => {
       };
 
 
-module.exports = { signup, signin, signout ,getMyProfile }
+module.exports = { signup, signin, signout ,getMyProfile,updateProfile,deleteMyProfile }

@@ -2,7 +2,7 @@ const express = require("express")
 const upload = express.Router();
 
 const { uploadFile } = require("../controllers/uploadController")
-const isAuthenticated = require('../middleware/auth')
+const {isAuthenticated} = require('../middleware/auth')
 
 
 //uploadRoutes.route("/upload").post(singleUpload); 

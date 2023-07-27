@@ -1,12 +1,12 @@
  
  const express = require("express")
+ const userRoutes = express.Router();
 
  const {signup,signin, signout,getMyProfile} = require("../controllers/userController") 
  
- const userRoutes = express.Router();
- const isAuthenticated  = require('../middleware/auth')
+ const {isAuthenticated}  = require('../middleware/auth')
  userRoutes.post("/signup",signup);
- userRoutes.post("/signin",signin,isAuthenticated);
+ userRoutes.post("/signin",signin);
 
  // Get my profile
  userRoutes.route("/me").get(isAuthenticated, getMyProfile);

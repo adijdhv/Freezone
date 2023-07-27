@@ -42,7 +42,7 @@ const uploadFile = async (req, res) => {
                                 });
 
                         console.log("FILE UPLOADED")
-                        res.status(200).send("FILE UPLOADED SUCCESSFULLY"+ LoggedinUser.document.url)
+                        res.status(200).send("FILE UPLOADED SUCCESSFULLY"+ userIdToUpdate.document.url)
 
                 } catch (error) {
                         console.log(error)
