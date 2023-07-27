@@ -1,40 +1,28 @@
-const express = require("express");
-const userRouter = require("./routes/userRoutes")
-const cookieParser = require("cookie-parser");
-const cloudinaryUpload = require('./routes/uploadDocument')
-const cors = require('cors')
-require("dotenv").config({ path: "functions/config/.env" })
+const app = require("./app");
+const { connectDatabase } = require("../functions/config/database");
 const session = require('express-session');
 
+const cloudinary = require("cloudinary") ;
 
-const app = express();
 
-app.use(session({
-        secret: process.env.session_secret, // Replace with your own secret key for session data encryption
-        resave: false,
-        saveUninitialized: false,
-      }));
+connectDatabase()
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }));
-app.use(cors())
+
+
+
+
+cloudinary.v2.config({
+        cloud_name: process.env.CLOUDINARY_CLIENT_NAME,
+        api_key: process.env.CLOUDINARY_CLIENT_API,
+        api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
+      });
  
-app.use(cookieParser());
 
-app.use((req, res, next) => {
-        console.log(`Method: ${req.method} and URL: ${req.url}`)
-        next()
+PORT = 80 || process.env.PORT
+app.listen(PORT,()=>{
+        console.log(`Server is running on ${PORT} 
+         link : http://localhost:3000/api/signup`)
 })
 
- 
-app.use("/api/file/", cloudinaryUpload)
- 
-app.get("/", (req, res) => {
-        res.send("Working Fine")
-})
-app.use("/api/user/", userRouter)
-//app.use("/api/admin/", adminRouter)
-
-
-
-module.exports = app;
+//Endpoints for localhost
+//signup -  http://localhost:3000/api/signup
