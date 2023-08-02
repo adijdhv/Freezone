@@ -4,8 +4,7 @@ PORT = process.env.PORT ||'3000'
 
 MONGO_URI = process.env.MONGO_URI   
  
-console.log("Mongo URI",MONGO_URI)
-exports.connectDatabase = () => {
+ exports.connectDatabase = () => {
         mongoose
                 .connect(MONGO_URI)
                 .then(

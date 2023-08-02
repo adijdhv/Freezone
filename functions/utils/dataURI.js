@@ -6,10 +6,9 @@ const session = require('express-session');
 
 const getDataUri = (file) => {
   const parser = new DataUriParser();
-  console.log("file.originalname",file.originalname)
+  console.log("file originalname",file.originalname)
   const extName = path.extname(file.originalname).toString();
   session.extName = extName;
-  
   return parser.format(extName, file.buffer);
 };
 

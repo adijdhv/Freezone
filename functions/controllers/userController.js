@@ -27,18 +27,32 @@ const signup = async (req, res) => {
                 }
                 const hashedPassword = await bcrypt.hash(password, 10);
 
-                const user = await User.create({
+                 await User.create({
                         email: email,
                         password: hashedPassword,
                         username: username,
-                        role: 'user'
+                         
+                        Address: '',
+                        city:'',
+                        country:''
+
+                        
+                }).then((user)=>{
+                        sendToken(res, user, `Registered user ${user.username}`, 200);
+                        console.log("USER REGISTERED SUCCESSFULLY")
+                }).catch((error)=>{
+                        console.log(error);
+                        res.status(501).json({
+                                error,
+                                message:"User not registered"
+                        })
                         
                 })
 
 
 
 
-                sendToken(res, user, `Registered user ${user.username}`, 200);
+                
                 //  res.status(200).json({user:user, token: token})
 
         } catch (error) {
@@ -55,7 +69,7 @@ const signin = async (req, res) => {
 
         try {
                 const { email, password } = req.body;
-                const existingUser = await User.findOne({ email: email }).select("password");
+                const existingUser = await User.findOne({ email: email }).select("password").maxTimeMS(15000);;
 
                 if (!existingUser) {
                         return res.status(400).json({ messsage: "User not Registered, Signup now" })
@@ -102,6 +116,7 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
           message: "Profile Updated Successfully",
         });
       });
+
 
 const deleteMyProfile = catchAsyncError(async (req, res, next) => {
         const user = await User.findById(req.user._id);

@@ -18,6 +18,26 @@
                 required: true,
                 select: false,
         } ,
+        firstName:{
+          type:String
+        },
+        lastname:{
+          type:String
+        },
+        Address :{
+          type: String,
+        },
+
+        city:{
+          type:String
+        },
+        
+        country:{
+          type:String
+        },
+        kycSubmitted :{
+          type: Boolean
+        },
         kycApproved :{
           type: Boolean, 
           default: false
@@ -33,11 +53,11 @@
             
           },
         },
-        role :{
+        role: {
           type: String,
-          required: true,
-
-        }
+          enum: ["admin", "user"],
+          default: "user",
+        },
         
 
  },{timestamps :true});

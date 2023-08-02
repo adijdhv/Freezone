@@ -7,16 +7,22 @@ const cloudinary = require("cloudinary");
  
 
 const uploadFile = async (req, res) => {
+      
         singleUpload(req, res, async (err) => {
-
-
+                console.error('uploadFile' );
+                const file = req.file
+                console.log("file in upload",file)
                 if (err) {
                         console.error('Error uploading file:', err);
                         return res.status(500).send('Error uploading file');
                 }
                 try {
+                       // const firstName = req.body.firstName;
+                       
                       
-                        const file = req.file;
+                        if (!req.file) {
+                                return res.status(400).json({ message: 'No file uploaded' });
+                              }
                         const fileUri = getDataUri(file);
                         
                         const mycloud = await cloudinary.v2.uploader.upload(fileUri.content);
@@ -36,13 +42,16 @@ const uploadFile = async (req, res) => {
                                 })
                                 .then(user => {
                                         console.log('Updated user:', user);
+                                        res.status(200).send(user).json({
+                                                message:"FILE UPLOADED SUCCESFULLY"
+                                        })
                                 })
                                 .catch(error => {
                                         console.error('Error updating user:', error);
                                 });
 
-                        console.log("FILE UPLOADED")
-                        res.status(200).send("FILE UPLOADED SUCCESSFULLY"+ userIdToUpdate.document.url)
+                       
+                        
 
                 } catch (error) {
                         console.log(error)
@@ -124,6 +133,6 @@ const saveFileURLToDb = async (res, req) => {
 
 
 
-}
+} 
 
-module.exports = { uploadFile, downloadFile, saveFileURLToDb }
+module.exports = { uploadFile   }

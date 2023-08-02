@@ -4,20 +4,27 @@ const ErrorHandler = require("../utils/errorHandler.js");
 const { catchAsyncError } = require("./catchAsyncError.js");
 //const { User } = require("../models/user.js");
 const User = require("../models/user.js");
-//const SECRET_KEY = "APIDONE";
-const isAuthenticated = catchAsyncError(async (req, res, next) => {
-  const { token } = req.cookies;
-  console.log("User", User)
 
+
+
+ const isAuthenticated = catchAsyncError(async (req, res, next) => {
+  //const userAgent = req.headers['authorization'];
+  const authHeader = req.headers['authorization']
+  console.log("authHeader",authHeader)
+  const token = authHeader && authHeader.split(' ')[1];
+   
+  console.log("TOKEN::: ",token)
+   
   if (!token) return next(new ErrorHandler("Not Logged In", 401));
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   console.log("decoded: ", decoded._id)
 
   req.user = await User.findById({ _id: decoded._id });
-  console.log("REQ>USER:", req.user)
-
+  console.log("REQ.USER:", req.user)
+ 
   next();
+  
 }); 
 
 const authorizeAdmin = (req, res, next) => {
