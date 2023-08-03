@@ -4,17 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon functions/index.js"
-    
+    "dev": "nodemon functions/index.js",
+    "vercel-build" : "echo hello"
   },
-  "vercel": {
-    "builds": [
-      { "src": "nodemon functions/index.js", "use": "@vercel/node" }
-    ],
-    "routes": [
-      { "src": "/(.*)", "dest": "functions/index.js" }
-    ]
-  },
+   
   "author": "",
   "license": "ISC",
   "dependencies": {
