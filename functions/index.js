@@ -18,7 +18,7 @@ cloudinary.v2.config({
       });
  
 
-PORT = 80 || process.env.PORT
+PORT = process.env.PORT || 80
 app.listen(PORT,()=>{
         console.log(`Server is running on ${PORT} 
          link : http://localhost:3000/api/signup`)

@@ -5,8 +5,8 @@ const { sendToken } = require('../utils/sendToken');
 const kycform = catchAsyncError(async (req, res, next) => {
          
         const { firstName, lastName, address, city, country,file } = req.body;
-        console.log("firstName",firstName )
-        console.log("country",country )
+         
+         
         if (!firstName || !lastName || !address || !city || !country) {
                 console.error('please fill the form');
                 res.send('please fill the form')

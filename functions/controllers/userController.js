@@ -140,9 +140,9 @@ const deleteMyProfile = catchAsyncError(async (req, res, next) => {
       });
       
       
-  const getMyProfile = async (req, res, next) => {
-        try {
-                const user = await User.findById(req.user._id);
+  const getMyProfile = catchAsyncError(async  (req, res, next) => {
+        try {console.log("REQ>USER",req.user)
+                const user = await User.findById(req.user);
       
         res.status(200).json({
           success: true,
@@ -150,10 +150,34 @@ const deleteMyProfile = catchAsyncError(async (req, res, next) => {
         });
                 
         } catch (error) {
-                console.log(err)
+                console.log(error)
+                 res.send(error)
         }
         
-      };
+});
+ const forgetPassword = catchAsyncError(async (req, res, next) => {
+        const { email } = req.body;
+      
+        const user = await User.findOne({ email });
+      
+        if (!user) return next(new ErrorHandlee("User not found", 400));
+      
+        const resetToken = await user.getResetToken();
+      
+        await user.save();
+      
+        const url = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
+      
+        const message = `Click on the link to reset your password. ${url}. If you have not request then please ignore.`;
+      
+        // Send token via email
+        await sendEmail(user.email, "CourseBundler Reset Password", message);
+      
+        res.status(200).json({
+          success: true,
+          message: `Reset Token has been sent to ${user.email}`,
+        });
+      });
 
 
-module.exports = { signup, signin, signout ,getMyProfile,updateProfile,deleteMyProfile }
+module.exports = { signup, signin, signout ,getMyProfile,updateProfile,deleteMyProfile,forgetPassword }

@@ -2,7 +2,7 @@
  const express = require("express")
  const userRoutes = express.Router();
 
- const {signup,signin, signout,getMyProfile} = require("../controllers/userController") 
+ const {signup,signin, signout,getMyProfile, deleteMyProfile, forgetPassword} = require("../controllers/userController") 
  
  const {isAuthenticated}  = require('../middleware/auth');
 const { kycform } = require("../controllers/userKYCform");
@@ -22,6 +22,22 @@ const { uploadFile } = require("../controllers/uploadController");
  userRoutes.route("/kycform").put(isAuthenticated,kycform );
  userRoutes.route("/docUpload").put(isAuthenticated,uploadFile );
 
- 
+ //get my profile
+ userRoutes.route("/myProfile").get(isAuthenticated,getMyProfile);
+
+ //delete my profile
+ userRoutes.route("/deleteprofile").delete(isAuthenticated, deleteMyProfile);
+
+ //change password
+ //userRoutes.route("/changepassword").put(isAuthenticated, changePassword);
+
+//update profile
+//userRoutes.route("/updateprofile").put(isAuthenticated, updateProfile);
+
+// ForgetPassword
+//userRoutes.route("/forgetpassword").post(forgetPassword);
+// ResetPassword
+//userRoutes.route("/resetpassword/:token").put(resetPassword);
+
  module.exports = userRoutes;
 

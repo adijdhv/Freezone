@@ -9,9 +9,9 @@ const cloudinary = require("cloudinary");
 const uploadFile = async (req, res) => {
       
         singleUpload(req, res, async (err) => {
-                console.error('uploadFile' );
+                
                 const file = req.file
-                console.log("file in upload",file)
+                
                 if (err) {
                         console.error('Error uploading file:', err);
                         return res.status(500).send('Error uploading file');
@@ -41,10 +41,13 @@ const uploadFile = async (req, res) => {
                                         
                                 })
                                 .then(user => {
-                                        console.log('Updated user:', user);
+                                      
+                                                console.log('Updated user:', user);
                                         res.status(200).send(user).json({
                                                 message:"FILE UPLOADED SUCCESFULLY"
                                         })
+ 
+                                        
                                 })
                                 .catch(error => {
                                         console.error('Error updating user:', error);
@@ -135,4 +138,4 @@ const saveFileURLToDb = async (res, req) => {
 
 } 
 
-module.exports = { uploadFile   }
+module.exports = { uploadFile,saveFileURLToDb, downloadFile  }

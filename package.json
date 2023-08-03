@@ -7,6 +7,14 @@
     "dev": "nodemon functions/index.js"
     
   },
+  "vercel": {
+    "builds": [
+      { "src": "functions/index.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "functions/index.js" }
+    ]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

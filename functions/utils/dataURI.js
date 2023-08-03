@@ -11,19 +11,6 @@ const getDataUri = (file) => {
   session.extName = extName;
   return parser.format(extName, file.buffer);
 };
-
- 
-
-
-  // const parser = new DataUriParser();
-  // const filePath =  file.path;
-  // console.log("filePath: ",filePath)
-  // const buffer = file.buffer
-  // console.log("buffer: ",buffer)
-  // console.log("ORIGNAL NAME: ",file.originalname)
-  // const extName = path.extname(file.originalname).toString();
-  // console.log("extName",extName)
-  // return parser.format(extName, buffer);
  
    
 
