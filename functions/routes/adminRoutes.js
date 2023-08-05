@@ -11,7 +11,7 @@ const adminRoutes = express.Router();
 adminRoutes.route("/allUsers").get(isAuthenticated, authorizeAdmin, getAllUsers);
 adminRoutes.post("/signup",signUpADMIN);
 adminRoutes.post("/signin",signinADMIN); 
-adminRoutes.post("/signout",logoutADMIN);
+adminRoutes.get("/signout",logoutADMIN);
 //adminRoutes.get("/getRole",getRole);
 
 // router
