@@ -1,7 +1,7 @@
  
 const express = require("express")
 const {isAuthenticated,authorizeAdmin} = require('../middleware/auth');
-const { getAllUsers, signUpADMIN, signinADMIN, getRole } = require("../controllers/adminController");
+const { getAllUsers, signUpADMIN, signinADMIN, getRole ,logoutADMIN} = require("../controllers/adminController");
 //const {getAllUsers} = require('../controllers/userController')
 
 const adminRoutes = express.Router();
@@ -10,8 +10,8 @@ const adminRoutes = express.Router();
 // router.route("/admin/Allusers").get(isAuthenticated, authorizeAdmin, getAllUsers);
 adminRoutes.route("/allUsers").get(isAuthenticated, authorizeAdmin, getAllUsers);
 adminRoutes.post("/signup",signUpADMIN);
-adminRoutes.post("/signin",signinADMIN);
-
+adminRoutes.post("/signin",signinADMIN); 
+adminRoutes.post("/signout",logoutADMIN);
 //adminRoutes.get("/getRole",getRole);
 
 // router

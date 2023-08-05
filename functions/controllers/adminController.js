@@ -123,6 +123,20 @@ const getRole = async(req,res,next)=>{
   
 
 }
+ const logoutADMIN = catchAsyncError(async (req, res, next) => {
+  res
+    .status(200)
+    .cookie("token", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    })
+    .json({
+      success: true,
+      message: "Logged Out Successfully",
+    });
+});
 
 const deleteMyProfile = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
@@ -143,4 +157,4 @@ const deleteMyProfile = catchAsyncError(async (req, res, next) => {
       message: "User Deleted Successfully",
     });
 });
-module.exports = { deleteMyProfile, deleteUser, getAllUsers, updateUserRole,signUpADMIN ,getRole,signinADMIN}
+module.exports = { deleteMyProfile, deleteUser, getAllUsers, updateUserRole,signUpADMIN ,logoutADMIN,getRole,signinADMIN}
