@@ -31,7 +31,8 @@ const signup = async (req, res) => {
                         email: email,
                         password: hashedPassword,
                         username: username,
-                         
+                        kycSubmitted:false,
+ 
                         Address: '',
                         city:'',
                         country:''
